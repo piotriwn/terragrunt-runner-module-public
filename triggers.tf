@@ -23,6 +23,10 @@ resource "google_cloudbuild_trigger" "trigger" {
   service_account = "projects/${var.project_id}/serviceAccounts/${google_service_account.cloud_build_sa.email}"
   location        = var.trigger_location
   included_files  = var.included_files_list # only trigger if at least one file under terraform dir has been changed
+  tags = [
+    var.trigger_purpose,
+    var.resource_name_prefix
+  ]
 
   dynamic "repository_event_config" {
     for_each = contains(["apply", "plan", "plan-pr"], each.key) ? ["dummy"] : []
